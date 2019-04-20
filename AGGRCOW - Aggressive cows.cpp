@@ -1,4 +1,5 @@
 //this is a really good problem. Please refer https://www.youtube.com/watch?v=TC6snf6KPdE for better understanding.
+//Also go through- https://www.topcoder.com/community/competitive-programming/tutorials/binary-search
 
 #include <iostream>
 #include <algorithm>
