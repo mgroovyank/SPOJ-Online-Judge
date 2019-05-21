@@ -42,5 +42,5 @@ int main(){
     cout<<totalFees<<" "<<sack[n-1][b]<<"\n";
     cin>>b>>n;
   }
-  return 0;
+  return 0; 
 }
