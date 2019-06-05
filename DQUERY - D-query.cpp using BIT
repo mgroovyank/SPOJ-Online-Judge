@@ -1,0 +1,70 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+struct query{
+  int l,r,idx;
+};
+bool comparator(query x,query y){
+  return x.r<y.r;
+}
+int temp(int bitree[],int index,int n){
+  int sum=0;
+  while(index>0){
+    sum+=bitree[index];
+    index-=index&(-index);
+  }
+  return sum;
+}
+void update(int bitree[],int index,int val,int n){
+  while(index<=n){
+    bitree[index]+=val;
+    index+=index&(-index);
+  }
+}
+void distinct(int arr[],int n,query queries[],int q){
+  int i;
+  int bitree[n+1];
+  for(i=0;i<n+1;i++){
+    bitree[i]=0;
+  }
+  sort(queries,queries+q,comparator);
+  int last_visit[1000001];
+  for(i=0;i<1000001;i++){
+    last_visit[i]=-1;
+  }
+  int query_counter,ans[q];
+  query_counter=0;
+  for(i=0;i<n;i++){
+    if(last_visit[arr[i]]!=-1){
+      update(bitree,last_visit[arr[i]]+1,-1,n);
+    }
+    last_visit[arr[i]]=i;
+    update(bitree,i+1,1,n);
+    while(query_counter<q && queries[query_counter].r==i){
+      ans[queries[query_counter].idx]=temp(bitree,queries[query_counter].r+1,n)-temp(bitree,queries[query_counter].l,n);
+      query_counter++;
+    }
+  }
+  for(i=0;i<q;i++){
+    cout<<ans[i]<<"\n";
+  }
+}
+int main(){
+  int n;
+  while(cin>>n){
+    int i,arr[n];
+    for(i=0;i<n;i++){
+      cin>>arr[i];
+    }
+    int q;
+    cin>>q;
+    query queries[q];
+    for(i=0;i<q;i++){
+      queries[i].idx=i;
+      cin>>queries[i].l>>queries[i].r;
+      queries[i].l--;
+      queries[i].r--;
+    }
+    distinct(arr,n,queries,q);
+  }
+}
