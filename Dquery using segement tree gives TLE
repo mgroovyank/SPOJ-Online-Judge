@@ -1,0 +1,58 @@
+#include <iostream>
+#include <cmath>
+#include <set>
+#include <algorithm>
+using namespace std;
+set<int> distinct(set<int>* st,int ql,int qr,int l,int r,int cn,set<int> ans){
+  if(ql<=l && qr>=r){
+    return st[cn];
+  }
+  if(ql>r || qr<l){
+    set<int> temp;
+    return temp;
+  }
+  int mid=l+(r-l)/2;
+  set<int> s1=distinct(st,ql,qr,l,mid,2*cn+1,ans);
+  set<int> s2=distinct(st,ql,qr,mid+1,r,2*cn+2,ans);
+  ans.insert(s1.begin(),s1.end());
+  ans.insert(s2.begin(),s2.end());
+  return ans;
+}
+set<int> createSTUtil(int arr[],int l,int r,set<int> *st,int cn){
+  if(l==r){
+    st[cn].insert(arr[l]);
+    return st[cn];
+  }
+  int mid=l+(r-l)/2;
+  set<int> s1=createSTUtil(arr,l,mid,st,2*cn+1);
+  set<int> s2=createSTUtil(arr,mid+1,r,st,2*cn+2);
+  set_union(s1.begin(),s1.end(),s2.begin(),s2.end(),inserter(st[cn],st[cn].begin()));
+  return st[cn];
+}
+set<int>* createST(int arr[],int n){
+  int h=ceil(log2(n));
+  int nodes=2*(int)pow(2,h)-1;
+  set<int> *st=new set<int>[nodes];
+  createSTUtil(arr,0,n-1,st,0);
+  return st;
+}
+int main() {
+  int n;
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+  while(cin>>n){
+    int i,arr[n];
+    for(i=0;i<n;i++){
+    cin>>arr[i];
+    }
+    set<int> *st=createST(arr,n);
+    int q,ql,qr;
+    cin>>q;
+    for(i=0;i<q;i++){
+      cin>>ql>>qr;
+      set<int> ans;
+      cout<<distinct(st,ql-1,qr-1,0,n-1,0,ans).size()<<"\n";
+    }
+  }
+  return 0;
+}
